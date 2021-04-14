@@ -1,5 +1,7 @@
 {% load bootstrap4 %}
+
 {% load static %}
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -9,6 +11,7 @@
         <title>{% block title %}Главная{% endblock %} - Доска объявлений</title>
         {% bootstrap_css %}
         <link rel="stylesheet" type="text/css" href="{% static 'main/style.css' %}">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         {% bootstrap_javascript jquery='slim' %}
     </head>
     <body class="container-fluid">
@@ -24,31 +27,31 @@
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown"
                     href="#" role="button" aria-haspopup="true"
                     aria-expanded="false">Профиль</a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Мои объявления</a>
-                        <a class="dropdown-item" href="#">Изменить личные данные</a>
-                        <a class="dropdown-item" href="#">Изменить пароль</a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" href="{% url 'main:profile' %}">Мои объявления</a>
+                        <a class="dropdown-item" href="{% url 'main:profile_change' %}">Изменить личные данные</a>
+                        <a class="dropdown-item" href="{% url 'main:password_change' %}">Изменить пароль</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Выйти</a>
+                        <a class="dropdown-item" href="{% url 'main:logout' %}">Выйти</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Удалить</a>
+                        <a class="dropdown-item" href="{% url 'main:profile_delete' %}">Удалить</a>
                     </div>
                 </li>
                 {% else %}
-                <li class="nav-item"><a class="nav-link" href="#">Вход</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'main:login' %}">Вход</a></li>
                 {% endif %}
             </ul>
         </div>
         <div class="row">
             <nav class="col-md-auto nav flex-column border">
                 <a class="nav-link root" href="{% url 'main:index' %}">Главная</a>
-                <span class="nav-link root font-weight-bold" href="#">Недвижимость</span>
-                <a class="nav-link" href="#">Жилье</a>
-                <a class="nav-link" href="#">Склады</a>
-                <a class="nav-link" href="#">Гаражи</a>
-                <span class="nav-link root font-weight-bold" href="#">Транспорт</span>
-                <a class="nav-link" href="#">Легковой</a>
-                <a class="nav-link" href="#">Грузовой</a>
+                {% for rubric in rubrics %}
+                {% ifchanged rubric.super_rubric.pk %}
+                <span class="nav-link root font-weight-bold">{{ rubric.super_rubric.name }}</span>
+                {% endifchanged %}
+                <a class="nav-link" href="{% url 'main:by_rubric' pk=rubric.pk %}">{{ rubric.name }}</a>
+                {% endfor %}
+                <a class="nav-link root" href="{% url 'main:other' page='about' %}">О сайте</a>
             </nav>
             <section class="col border py-2">
                 {% bootstrap_messages %}
